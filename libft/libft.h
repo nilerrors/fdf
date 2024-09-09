@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 22:52:10 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 15:37:29 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 20:14:35 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_data		ft_memcpy(t_data dst, const t_data src, size_t n);
 t_data		ft_memmove(t_data dst, const t_data src, size_t len);
 t_data		ft_memset(t_data b, int c, size_t len);
 t_bool		ft_set_free(t_data *ptr);
+t_data		ft_make_free(t_data *ptr);
 t_bool		ft_free_tab(t_data *tab);
 
 // char classification and conversion
@@ -96,19 +97,20 @@ t_bool		ft_char_in_str(char c, const t_str str);
 int			ft_atoi(const t_str str);
 int			ft_htoi(const t_str str);
 t_bool		ft_isinteger(const t_str str, int *n);
-int		extract_decimal_part(float num);
+t_int		extract_decimal_part(float num);
 t_str		ft_itoa(int n);
 t_str		ft_ftoa(float n);
 t_str		*ft_split(const t_str s, char c);
 t_str		ft_strchr(const t_str s, int c);
 t_str		ft_strdup(const t_str s1);
 t_str		ft_strjoin(const t_str s1, const t_str s2);
+t_str		ft_strjoin_free(const t_str s1, const t_str s2);
 size_t		ft_strlcat(t_str dst, const t_str src, size_t size);
 size_t		ft_strlcpy(t_str dst, const t_str src, size_t size);
 size_t		ft_strlen(const t_str s);
 void		ft_striteri(t_str s, void (*f)(t_uint, t_str));
 t_str		ft_strmapi(const t_str s, char (*f)(t_uint, char));
-int			ft_strncmp(const t_str s1, const t_str s2, size_t n);
+t_int		ft_strncmp(const t_str s1, const t_str s2, size_t n);
 t_str		ft_strnstr(const t_str haystack, const t_str needle, size_t len);
 t_str		ft_strrchr(const t_str s, int c);
 t_str		ft_strtrim(const t_str s1, const t_str set);

@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 01:05:35 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 16:20:40 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/10 00:43:02 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,6 @@ t_bool	pixel_put(t_env_fdf *env, int x, int y, int color)
 	return (TRUE);
 }
 
-int	color_from_rgb(t_uint r, t_uint g, t_uint b)
-{
-	r %= 256;
-	g %= 256;
-	b %= 256;
-	return ((r << 16) | (g << 8) | b);
-}
-
 t_bool	set_xy_color(t_env_fdf *env, t_intpair p, t_str s)
 {
 	if (!env || !s || !env->map || !env->map->colors)
@@ -46,77 +38,50 @@ t_bool	set_xy_color(t_env_fdf *env, t_intpair p, t_str s)
 	return (TRUE);
 }
 
-t_bool	render_stats(t_env_fdf *env)
+static t_bool	render_text(t_env_fdf *env, t_str str, float n, t_int y)
 {
 	t_str	s;
 	t_str	fs;
 
-	if (!env)
-		return (FALSE);
-	s = ft_ftoa(env->camera->angle.x);
+	s = ft_ftoa(n);
 	if (!s)
 		return (FALSE);
-	fs = ft_strjoin("Camera angle x:  ", s);
+	fs = ft_strjoin(str, s);
 	free(s);
 	if (!fs)
 		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 10, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_ftoa(env->camera->angle.y);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Camera angle y:  ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 30, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_ftoa(env->camera->angle.z);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Camera angle z:  ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 50, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_ftoa(env->camera->z_height);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Camera z height: ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 70, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_itoa(env->camera->zoom);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Camera zoom:     ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 90, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_itoa(env->map->min);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Map min:         ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 110, 0xFFFFFF, fs);
-	free(fs);
-	s = ft_itoa(env->map->max);
-	if (!s)
-		return (FALSE);
-	fs = ft_strjoin("Map max:         ", s);
-	free(s);
-	if (!fs)
-		return (FALSE);
-	mlx_string_put(env->mlx, env->win, 5, 130, 0xFFFFFF, fs);
+	mlx_string_put(env->mlx, env->win, 10, y, 0xFFFFFF, fs);
 	free(fs);
 	return (TRUE);
+}
+
+static t_bool	render_stats(t_env_fdf *env)
+{
+	t_bool	not_ok;
+
+	not_ok = FALSE;
+	if (!env)
+		return (FALSE);
+	not_ok = !render_text(env, "Camera angle x:  ", env->camera->angle.x, 20)
+		|| !render_text(env, "Camera angle y:  ", env->camera->angle.y, 40)
+		|| !render_text(env, "Camera angle z:  ", env->camera->angle.z, 60)
+		|| !render_text(env, "Camera z height: ", env->camera->z_height, 80)
+		|| !render_text(env, "Camera zoom:     ", env->camera->zoom, 100)
+		|| !render_text(env, "Map min:         ", env->map->min, 120)
+		|| !render_text(env, "Map max:         ", env->map->max, 140);
+	if (env->camera->view == ISOMETRIC)
+		mlx_string_put(env->mlx, env->win, 10, 160,
+			0xFFFFFF, "Perspective:     Isometric");
+	if (env->camera->view == PARALLEL)
+		mlx_string_put(env->mlx, env->win, 10, 160,
+			0xFFFFFF, "Perspective:     Parallel");
+	if (env->camera->view == TOPDOWN)
+		mlx_string_put(env->mlx, env->win, 10, 160,
+			0xFFFFFF, "Perspective:     Topdown");
+	if (env->camera->view == SIDE)
+		mlx_string_put(env->mlx, env->win, 10, 160,
+			0xFFFFFF, "Perspective:     Side-view");
+	return (!not_ok);
 }
 
 int	render_next_frame(t_env_fdf *env)
@@ -125,15 +90,12 @@ int	render_next_frame(t_env_fdf *env)
 
 	if (!env || !env->rerender)
 		return (0);
-	ft_bzero(env->addr, SCREEN_WIDTH * SCREEN_HEIGHT * (env->bits_per_pixel / 8));
-	p.y = 0;
-	if (env->camera->angle.x > 0)
-		p.y = env->map->size.y - 1;
+	ft_bzero(env->addr,
+		SCREEN_WIDTH * SCREEN_HEIGHT * (env->bits_per_pixel / 8));
+	p.y = 0 + (env->map->size.y - 1) * (env->camera->angle.x > 0);
 	while (p.y >= 0 && p.y < env->map->size.y)
 	{
-		p.x = 0;
-		if (env->camera->angle.y > 0)
-			p.x = env->map->size.x - 1;
+		p.x = 0 + (env->map->size.x - 1) * (env->camera->angle.y > 0);
 		while (p.x >= 0 && p.x < env->map->size.x)
 		{
 			if (p.x != env->map->size.x - 1)

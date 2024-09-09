@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 01:03:59 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/07 23:07:13 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 23:29:33 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ t_bool	clean_env_fdf(t_env_fdf *env)
 	if (!env || !env->mlx)
 		return (FALSE);
 	if (env->map)
-		matrix_destroy(env->map->mat);
+		(void)(matrix_destroy(env->map->mat)
+				&& matrix_destroy(env->map->colors));
 	free(env->map);
+	free(env->camera);
 	if (env->img)
 		mlx_destroy_image(env->mlx, env->img);
 	env->img = NULL;

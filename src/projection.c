@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 00:01:40 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 13:06:02 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 22:11:24 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,7 @@ t_vec2d	project_point(t_env_fdf *env, t_int x, t_int y)
 	t_int	z;
 
 	if (x < 0 || y < 0 || x >= env->map->size.x || y >= env->map->size.y)
-	{
-		ft_printf("Point: %d, %d\n", x, y);
 		exit(33);
-	}
 	z = matrix_get(env->map->mat, x, y);
 	p3d.x = x * env->camera->zoom;
 	p3d.y = y * env->camera->zoom;
@@ -72,6 +69,7 @@ t_vec2d	project_point(t_env_fdf *env, t_int x, t_int y)
 	rotate_z(&p3d, env->camera->angle.z);
 	p3d.x += SCREEN_WIDTH / 2 + env->camera->offset.x;
 	p3d.y += SCREEN_HEIGHT / 2 + env->camera->offset.y;
+	p.reverse = FALSE;
 	p.x = p3d.x;
 	p.y = p3d.y;
 	p.color = matrix_get(env->map->colors, x, y);

@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 12:58:36 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 16:12:11 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 20:16:19 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@ t_str	ft_itoa(int n)
 	return (str);
 }
 
-int	extract_decimal_part(float num)
+t_int	extract_decimal_part(float num)
 {
-	int	i;
+	t_int	i;
 	float	d;
-	int	scale;
+	t_int	scale;
 
 	if (num < 0)
 		num = -num;
@@ -93,24 +93,16 @@ t_str	ft_ftoa(float n)
 	{
 		s = ft_strjoin("-", si);
 		free(si);
+		if (!s)
+			return (NULL);
 		si = s;
-	}
-	sd = ft_itoa(extract_decimal_part(n));
-	if (!sd)
-	{
-		free(si);
-		return (NULL);
 	}
 	s = ft_strjoin(si, ".");
 	free(si);
 	if (!s)
-	{
-		free(sd);
 		return (NULL);
-	}
-	si = s;
-	s = ft_strjoin(si, sd);
-	free(si);
-	free(sd);
-	return (s);
+	sd = ft_itoa(extract_decimal_part(n));
+	if (!sd)
+		return (ft_make_free((void **)&s));
+	return (ft_strjoin_free(s, sd));
 }

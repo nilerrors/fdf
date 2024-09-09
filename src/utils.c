@@ -6,47 +6,29 @@
 /*   By: senayat <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 13:53:04 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/08 22:55:04 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 23:07:44 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./fdf.h"
 
-t_bool	swap_ints(t_int *a, t_int *b)
+t_bool	swap_4_ints(t_int *a, t_int *b, t_int *c, t_int *d)
 {
 	t_int	t;
 
-	if (!a || !b)
+	if (!a || !b || !c || !d)
 		return (FALSE);
 	t = *a;
 	*a = *b;
 	*b = t;
+	t = *c;
+	*c = *d;
+	*d = t;
 	return (TRUE);
 }
 
-t_bool	swap_4_ints(t_int *a, t_int *b, t_int *c, t_int *d)
+static int	lerp(int first, int second, double p)
 {
-	return (swap_ints(a, b) && swap_ints(c, d));
-}
-
-t_int	min(t_int a, t_int b)
-{
-	if (a < b)
-		return (a);
-	return (b);
-}
-
-t_int	max(t_int a, t_int b)
-{
-	if (a > b)
-		return (a);
-	return (b);
-}
-
-int	lerp(int first, int second, double p)
-{
-	if (first == second)
-		return (first);
 	return ((int)((double)first + (second - first) * p));
 }
 
@@ -63,30 +45,34 @@ t_int	pixel_color(t_line2d *l, t_int x, float factor)
 	r = lerp((l->a.color >> 16) & 0xFF, (l->b.color >> 16) & 0xFF, percent);
 	g = lerp((l->a.color >> 8) & 0xFF, (l->b.color >> 8) & 0xFF, percent);
 	b = lerp(l->a.color & 0xFF, l->b.color & 0xFF, percent);
-	//
-	// if (s.reverse)
-	// {
-	// 	r = ft_lerp((e.color >> 16) & 0xFF, (s.color >> 16) & 0xFF, percent);
-	// 	g = ft_lerp((e.color >> 8) & 0xFF, (s.color >> 8) & 0xFF, percent);
-	// 	b = ft_lerp(e.color & 0xFF, s.color & 0xFF, percent);
-	// }
-	// else
-	// {
-	// 	r = ft_lerp((s.color >> 16) & 0xFF, (e.color >> 16) & 0xFF, percent);
-	// 	g = ft_lerp((s.color >> 8) & 0xFF, (e.color >> 8) & 0xFF, percent);
-	// 	b = ft_lerp(s.color & 0xFF, e.color & 0xFF, percent);
-	// }
-	r *= factor;
-	g *= factor;
-	b *= factor;
+	if (l->a.reverse)
+	{
+		r = lerp((l->b.color >> 16) & 0xFF, (l->a.color >> 16) & 0xFF, percent);
+		g = lerp((l->b.color >> 8) & 0xFF, (l->a.color >> 8) & 0xFF, percent);
+		b = lerp(l->b.color & 0xFF, l->a.color & 0xFF, percent);
+	}
+	else
+	{
+		r = lerp((l->a.color >> 16) & 0xFF, (l->b.color >> 16) & 0xFF, percent);
+		g = lerp((l->a.color >> 8) & 0xFF, (l->b.color >> 8) & 0xFF, percent);
+		b = lerp(l->a.color & 0xFF, l->b.color & 0xFF, percent);
+	}
+	return (((int)(r * factor) << 16)
+			| ((int)(g * factor) << 8) | (int)(b * factor));
+}
+
+int	color_from_rgb(t_uint r, t_uint g, t_uint b)
+{
+	r %= 256;
+	g %= 256;
+	b %= 256;
 	return ((r << 16) | (g << 8) | b);
 }
 
 t_int	point_color(t_env_fdf *env, t_int z)
 {
-
-	double			percent;
-	unsigned int	max;
+	double	percent;
+	t_uint	max;
 
 	max = env->map->max - env->map->min;
 	if (max == 0)

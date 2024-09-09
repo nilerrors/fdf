@@ -6,13 +6,13 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 23:39:12 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/08 23:16:10 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 22:17:22 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./fdf.h"
 
-t_uint	count_width(t_str s)
+static t_uint	count_width(t_str s)
 {
 	t_uint	i;
 	t_uint	w;
@@ -56,36 +56,7 @@ t_intpair	size_map(t_str filepath)
 	return (size);
 }
 
-t_bool	readin_map(t_fd fd, t_env_fdf *env)
-{
-	t_str		line;
-	t_intpair	cpos;
-	t_str		*tab;
-	t_int		n;
-
-	cpos.y = 0;
-	line = get_next_line(fd);
-	while (line)
-	{
-		tab = ft_split(line, ' ');
-		free(line);
-		if (!tab)
-			return (FALSE);
-		cpos.x = 0;
-		while (tab[cpos.x])
-		{
-			n = ft_atoi(tab[cpos.x]);
-			set_xy_color(env, cpos, tab[cpos.x]);
-			matrix_set(env->map->mat, cpos.x++, cpos.y, n);
-		}
-		ft_free_tab((void **)tab);
-		cpos.y++;
-		line = get_next_line(fd);
-	}
-	return (TRUE);
-}
-
-t_bool	find_min_max_map(t_env_fdf *env)
+static t_bool	find_min_max_map(t_env_fdf *env)
 {
 	t_intpair	p;
 
@@ -107,6 +78,35 @@ t_bool	find_min_max_map(t_env_fdf *env)
 		}
 		p.y++;
 	}
+	return (TRUE);
+}
+
+t_bool	readin_map(t_fd fd, t_env_fdf *env)
+{
+	t_str		line;
+	t_intpair	cpos;
+	t_str		*tab;
+
+	ft_memset(env->map->colors->vec, -1, env->map->colors->vec->size);
+	cpos.y = 0;
+	line = get_next_line(fd);
+	while (line)
+	{
+		tab = ft_split(line, ' ');
+		free(line);
+		if (!tab)
+			return (FALSE);
+		cpos.x = -1;
+		while (tab[++cpos.x])
+		{
+			matrix_set(env->map->mat, cpos.x, cpos.y, ft_atoi(tab[cpos.x]));
+			set_xy_color(env, cpos, tab[cpos.x]);
+		}
+		ft_free_tab((void **)tab);
+		cpos.y++;
+		line = get_next_line(fd);
+	}
+	find_min_max_map(env);
 	return (TRUE);
 }
 
@@ -135,8 +135,6 @@ t_bool	read_parse_map(t_str path, t_env_fdf *env)
 	env->map->colors = matrix_create(env->map->size.x, env->map->size.y);
 	if (!env->map->mat)
 		return (ft_retf("FdF: Memory allocation error\n"));
-	ft_memset(env->map->colors->vec, -1, env->map->colors->vec->size);
 	readin_map(fd, env);
-	find_min_max_map(env);
 	return (TRUE);
 }

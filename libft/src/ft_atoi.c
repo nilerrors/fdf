@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 12:45:56 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/08 22:50:41 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/09 19:59:33 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,10 @@ int	ft_htoi(const t_str str)
 	result = 0;
 	while (ft_isspace(str[i]))
 		i++;
-	if (str[i] == '+')
-		i++;
-	else if (str[i] == '-')
-	{
-		negative = 1;
-		i++;
-	}
+	i += (str[i] == '+' || str[i] == '-');
+	negative = str[i - 1] == '-';
 	while ((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'F')
-			|| (str[i] >= 'a' && str[i] <= 'f'))
+		|| (str[i] >= 'a' && str[i] <= 'f'))
 	{
 		result *= 16;
 		if ((str[i] >= '0' && str[i] <= '9'))
@@ -68,8 +63,7 @@ int	ft_htoi(const t_str str)
 		else if (str[i] >= 'A' && str[i] <= 'F')
 			result += str[i] - 'A' + 10;
 		else if (str[i] >= 'a' && str[i] <= 'f')
-			result += str[i] - 'a' + 10;
-		i++;
+			result += str[i++] - 'a' + 10;
 	}
 	if (negative)
 		result = -result;
