@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 01:05:35 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/10 00:43:02 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/10 09:34:11 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,20 +67,19 @@ static t_bool	render_stats(t_env_fdf *env)
 		|| !render_text(env, "Camera angle z:  ", env->camera->angle.z, 60)
 		|| !render_text(env, "Camera z height: ", env->camera->z_height, 80)
 		|| !render_text(env, "Camera zoom:     ", env->camera->zoom, 100)
-		|| !render_text(env, "Map min:         ", env->map->min, 120)
-		|| !render_text(env, "Map max:         ", env->map->max, 140);
+		|| !render_text(env, "Camera x offset: ", env->camera->offset.x, 120)
+		|| !render_text(env, "Camera y offset: ", env->camera->offset.y, 140)
+		|| !render_text(env, "Map min:         ", env->map->min, 160)
+		|| !render_text(env, "Map max:         ", env->map->max, 180);
+	mlx_string_put(env->mlx, env->win, 10, 200, 0xFFFFFF, "Perspective:");
 	if (env->camera->view == ISOMETRIC)
-		mlx_string_put(env->mlx, env->win, 10, 160,
-			0xFFFFFF, "Perspective:     Isometric");
+		mlx_string_put(env->mlx, env->win, 110, 200, 0xFFFFFF, "Isometric");
 	if (env->camera->view == PARALLEL)
-		mlx_string_put(env->mlx, env->win, 10, 160,
-			0xFFFFFF, "Perspective:     Parallel");
+		mlx_string_put(env->mlx, env->win, 110, 200, 0xFFFFFF, "Parallel");
 	if (env->camera->view == TOPDOWN)
-		mlx_string_put(env->mlx, env->win, 10, 160,
-			0xFFFFFF, "Perspective:     Topdown");
+		mlx_string_put(env->mlx, env->win, 110, 200, 0xFFFFFF, "Topdown");
 	if (env->camera->view == SIDE)
-		mlx_string_put(env->mlx, env->win, 10, 160,
-			0xFFFFFF, "Perspective:     Side-view");
+		mlx_string_put(env->mlx, env->win, 110, 200, 0xFFFFFF, "Side-view");
 	return (!not_ok);
 }
 

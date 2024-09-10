@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:20:26 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/10 00:29:40 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/10 09:36:06 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@
 # define EVENT_KEY_SPACE 32
 # define EVENT_KEY_MINUS 45
 # define EVENT_KEY_PLUS 61
+# define EVENT_KEY_UP 65362
+# define EVENT_KEY_DOWN 65364
+# define EVENT_KEY_LEFT 65361
+# define EVENT_KEY_RIGHT 65363
+# define EVENT_KEY_A 97
+# define EVENT_KEY_S 115
+# define EVENT_KEY_D 100
+# define EVENT_KEY_F 102
 # define EVENT_KEY_H 104
 # define EVENT_KEY_J 106
 # define EVENT_KEY_K 107

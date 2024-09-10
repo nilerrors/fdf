@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 23:39:12 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 22:17:22 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/10 09:12:01 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ t_bool	readin_map(t_fd fd, t_env_fdf *env)
 		cpos.x = -1;
 		while (tab[++cpos.x])
 		{
-			matrix_set(env->map->mat, cpos.x, cpos.y, ft_atoi(tab[cpos.x]));
 			set_xy_color(env, cpos, tab[cpos.x]);
+			matrix_set(env->map->mat, cpos.x, cpos.y, ft_atoi(tab[cpos.x]));
 		}
 		ft_free_tab((void **)tab);
 		cpos.y++;

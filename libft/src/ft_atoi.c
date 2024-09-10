@@ -6,7 +6,7 @@
 /*   By: senayat <senayat@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 12:45:56 by senayat           #+#    #+#             */
-/*   Updated: 2024/09/09 19:59:33 by senayat          ###   ########.fr       */
+/*   Updated: 2024/09/10 09:09:13 by senayat          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int	ft_htoi(const t_str str)
 	while ((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'F')
 		|| (str[i] >= 'a' && str[i] <= 'f'))
 	{
-		result *= 16;
 		if ((str[i] >= '0' && str[i] <= '9'))
-			result += str[i] - '0';
+			result = result * 16 + str[i] - '0';
 		else if (str[i] >= 'A' && str[i] <= 'F')
-			result += str[i] - 'A' + 10;
+			result = result * 16 + str[i] - 'A' + 10;
 		else if (str[i] >= 'a' && str[i] <= 'f')
-			result += str[i++] - 'a' + 10;
+			result = result * 16 + str[i] - 'a' + 10;
+		i++;
 	}
 	if (negative)
 		result = -result;
